@@ -18,10 +18,11 @@ bool isPageInMemory(int memory[], int frameSize, int page) {
 void printMemoryState(int memory[], int frameSize) {
     printf("[ ");
     for (int i = 0; i < frameSize; i++) {
-        if (memory[i] != -1)
+        if (memory[i] != -1) {
             printf("%d ", memory[i]);
-        else
+        } else {
             printf("- ");
+        }
     }
     printf("]\n");
 }
@@ -36,18 +37,18 @@ void fifoPageReplacement(int pages[], int pageCount, int frameSize) {
         memory[i] = -1;
     }
 
-    printf("\nFIFO Page Replacement:\n");
+    printf("\n===== FIFO Algorithm =====\n");
 
     for (int i = 0; i < pageCount; i++) {
         int currentPage = pages[i];
 
         if (!isPageInMemory(memory, frameSize, currentPage)) {
-            memory[front] = currentPage; // Replace the oldest page
+            memory[front] = currentPage;  // Replace the oldest page
             front = (front + 1) % frameSize;
             pageFaults++;
-            printf("Page %d caused a page fault. ", currentPage);
+            printf("Page %d caused a fault: ", currentPage);
         } else {
-            printf("Page %d did not cause a page fault. ", currentPage);
+            printf("Page %d found in memory: ", currentPage);
         }
 
         printMemoryState(memory, frameSize);
@@ -59,7 +60,7 @@ void fifoPageReplacement(int pages[], int pageCount, int frameSize) {
 // LRU Page Replacement Algorithm
 void lruPageReplacement(int pages[], int pageCount, int frameSize) {
     int memory[MAX_FRAMES];
-    int usage[MAX_FRAMES]; // Track last used time for each frame
+    int usage[MAX_FRAMES];  // Track last used time for each frame
     int pageFaults = 0, time = 0;
 
     // Initialize memory and usage arrays to -1
@@ -68,7 +69,7 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
         usage[i] = -1;
     }
 
-    printf("\nLRU Page Replacement:\n");
+    printf("\n===== LRU Algorithm =====\n");
 
     for (int i = 0; i < pageCount; i++) {
         int currentPage = pages[i];
@@ -83,10 +84,10 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
                 }
             }
 
-            memory[lruIndex] = currentPage; // Replace the least recently used page
-            usage[lruIndex] = time;        // Update the usage time
+            memory[lruIndex] = currentPage;  // Replace the least recently used page
+            usage[lruIndex] = time;          // Update the usage time
             pageFaults++;
-            printf("Page %d caused a page fault. ", currentPage);
+            printf("Page %d caused a fault: ", currentPage);
         } else {
             // Update the usage time for the page
             for (int j = 0; j < frameSize; j++) {
@@ -95,7 +96,7 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
                     break;
                 }
             }
-            printf("Page %d did not cause a page fault. ", currentPage);
+            printf("Page %d found in memory: ", currentPage);
         }
 
         printMemoryState(memory, frameSize);
@@ -108,21 +109,31 @@ int main() {
     int pages[MAX_PAGES], pageCount, frameSize;
 
     // Input
-    printf("Enter the number of pages: ");
+    printf("Enter the number of pages (max %d): ", MAX_PAGES);
     scanf("%d", &pageCount);
+
+    if (pageCount <= 0 || pageCount > MAX_PAGES) {
+        printf("Invalid number of pages. Exiting.\n");
+        return 1;
+    }
 
     printf("Enter the page reference sequence: ");
     for (int i = 0; i < pageCount; i++) {
         scanf("%d", &pages[i]);
     }
 
-    printf("Enter the number of page frames: ");
+    printf("Enter the number of page frames (max %d): ", MAX_FRAMES);
     scanf("%d", &frameSize);
 
-    // Run FIFO
+    if (frameSize <= 0 || frameSize > MAX_FRAMES) {
+        printf("Invalid number of frames. Exiting.\n");
+        return 1;
+    }
+
+    // Run FIFO algorithm
     fifoPageReplacement(pages, pageCount, frameSize);
 
-    // Run LRU
+    // Run LRU algorithm
     lruPageReplacement(pages, pageCount, frameSize);
 
     return 0;
