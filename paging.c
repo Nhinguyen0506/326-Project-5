@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 #define MAX_FRAMES 10
 #define MAX_PAGES 50
@@ -37,7 +38,7 @@ void fifoPageReplacement(int pages[], int pageCount, int frameSize) {
         memory[i] = -1;
     }
 
-    printf("\n===== FIFO Algorithm =====\n");
+    printf("\n===== FIFO Algorithm ===== (Frames = %d)\n", frameSize);
 
     for (int i = 0; i < pageCount; i++) {
         int currentPage = pages[i];
@@ -69,7 +70,7 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
         usage[i] = -1;
     }
 
-    printf("\n===== LRU Algorithm =====\n");
+    printf("\n===== LRU Algorithm ===== (Frames = %d)\n", frameSize);
 
     for (int i = 0; i < pageCount; i++) {
         int currentPage = pages[i];
@@ -105,36 +106,53 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
     printf("Total Page Faults (LRU): %d\n", pageFaults);
 }
 
+// Function to parse the page request sequence
+int parsePageSequence(char input[], int pages[]) {
+    int count = 0;
+    char *token = strtok(input, "[, ]");
+    while (token != NULL) {
+        pages[count++] = atoi(token);
+        token = strtok(NULL, "[, ]");
+    }
+    return count;
+}
+
+// Function to parse the frame sizes
+int parseFrameSizes(char input[], int frames[]) {
+    int count = 0;
+    char *token = strtok(input, ", ");
+    while (token != NULL) {
+        frames[count++] = atoi(token);
+        token = strtok(NULL, ", ");
+    }
+    return count;
+}
+
 int main() {
-    int pages[MAX_PAGES], pageCount, frameSize;
+    int pages[MAX_PAGES], frames[MAX_FRAMES], pageCount, frameCount;
+    char pageInput[256], frameInput[256];
 
-    // Input
-    printf("Enter the number of pages (max %d): ", MAX_PAGES);
-    scanf("%d", &pageCount);
+    // Input for page request sequence
+    printf("Enter the Page Request Sequence (e.g., [7, 0, 1, 2, 0, 3, ...]): ");
+    fgets(pageInput, sizeof(pageInput), stdin);
+    pageCount = parsePageSequence(pageInput, pages);
 
-    if (pageCount <= 0 || pageCount > MAX_PAGES) {
-        printf("Invalid number of pages. Exiting.\n");
-        return 1;
+    // Input for frame sizes
+    printf("Enter the Number of Frames (e.g., 2, 3, 4): ");
+    fgets(frameInput, sizeof(frameInput), stdin);
+    frameCount = parseFrameSizes(frameInput, frames);
+
+    // Run algorithms for each frame size
+    for (int i = 0; i < frameCount; i++) {
+        int frameSize = frames[i];
+        if (frameSize <= 0 || frameSize > MAX_FRAMES) {
+            printf("Invalid frame size (%d). Skipping.\n", frameSize);
+            continue;
+        }
+
+        fifoPageReplacement(pages, pageCount, frameSize);
+        lruPageReplacement(pages, pageCount, frameSize);
     }
-
-    printf("Enter the page reference sequence: ");
-    for (int i = 0; i < pageCount; i++) {
-        scanf("%d", &pages[i]);
-    }
-
-    printf("Enter the number of page frames (max %d): ", MAX_FRAMES);
-    scanf("%d", &frameSize);
-
-    if (frameSize <= 0 || frameSize > MAX_FRAMES) {
-        printf("Invalid number of frames. Exiting.\n");
-        return 1;
-    }
-
-    // Run FIFO algorithm
-    fifoPageReplacement(pages, pageCount, frameSize);
-
-    // Run LRU algorithm
-    lruPageReplacement(pages, pageCount, frameSize);
 
     return 0;
 }
