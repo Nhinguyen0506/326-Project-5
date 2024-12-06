@@ -56,10 +56,8 @@ void fifoPageReplacement(int pages[], int pageCount, int frameSize) {
         }
         printf("| %-4d | %-5d | ", i + 1, currentPage);
         printMemoryState(memory, frameSize);
-        printf("| %-12s |\n", pageFault ? "Yes" : "No");
+        printf("   | %-12s\n", pageFault ? "Yes" : "No");
     }
-
-    printf("+------+-------+-------------------+--------------+\n");
     printf("Total Page Faults (FIFO): %d\n", pageFaults);
 }
 
@@ -76,7 +74,7 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
     int memoryStateWidth = frameSize * 5 + (frameSize - 1) * 2; 
     printf("\n===== LRU Algorithm ===== (Frames = %d)\n", frameSize);
     printf("| Step | Page  | %-*s | Page Fault?  |\n", memoryStateWidth, "Memory State");
-    printf("-----------------%*s-----------------\n", memoryStateWidth, "-------------------");
+    printf("-----------------%*s-----------------\n", memoryStateWidth, "----------------------");
 
     for (int i = 0; i < pageCount; i++) {
         int currentPage = pages[i];
@@ -109,7 +107,7 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
         // Print the current step, page, memory state, and page fault status
         printf("| %-4d | %-5d | ", i + 1, currentPage);
         printMemoryState(memory, frameSize);
-        printf("| %-12s \n", pageFault ? "Yes" : "No");
+        print("   | %-12s\n", pageFault ? "Yes" : "No");
     }
 
     printf("Total Page Faults (LRU): %d\n", pageFaults);
@@ -118,10 +116,10 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
 // Function to parse the page request sequence
 int parsePageSequence(char input[], int pages[]) {
     int count = 0;
-    char *token = strtok(input, "[, ]");
+    char *token = strtok(input, "[,]");
     while (token != NULL) {
         pages[count++] = atoi(token);
-        token = strtok(NULL, "[, ]");
+        token = strtok(NULL, "[,]");
     }
     return count;
 }
@@ -129,10 +127,10 @@ int parsePageSequence(char input[], int pages[]) {
 // Function to parse the frame sizes
 int parseFrameSizes(char input[], int frames[]) {
     int count = 0;
-    char *token = strtok(input, ", ");
+    char *token = strtok(input, ",");
     while (token != NULL) {
         frames[count++] = atoi(token);
-        token = strtok(NULL, ", ");
+        token = strtok(NULL, ",");
     }
     return count;
 }
