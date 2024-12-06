@@ -21,11 +21,15 @@ void printMemoryState(int memory[], int frameSize) {
     printf("[");
     for (int i = 0; i < frameSize; i++) {
         if (memory[i] != -1) {
-            printf("%2d,", memory[i]);
+            printf(" %2d ", memory[i]);
         } else {
-            printf("-]");
+            printf("  - ");
+        }
+        if (i < frameSize - 1) {
+            printf(",");
         }
     }
+    printf("] ");
 }
 
 // FIFO Page Replacement Algorithm
@@ -41,8 +45,9 @@ void fifoPageReplacement(int pages[], int pageCount, int frameSize) {
     printf("\n===== FIFO Algorithm ===== (Frames = %d)\n", frameSize);
 
     // Print table headers
+    printf("+------+-------+-------------------+--------------+\n");
     printf("| Step | Page  | Memory State      | Page Fault?  |\n");
-    printf("---------------------------------------------------\n");
+    printf("+------+-------+-------------------+--------------+\n");
 
     for (int i = 0; i < pageCount; i++) {
         int currentPage = pages[i];
@@ -61,6 +66,7 @@ void fifoPageReplacement(int pages[], int pageCount, int frameSize) {
         printf("| %-12s |\n", pageFault ? "Yes" : "No");
     }
 
+    printf("+------+-------+-------------------+--------------+\n");
     printf("Total Page Faults (FIFO): %d\n", pageFaults);
 }
 
@@ -78,8 +84,8 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
 
     printf("\n===== LRU Algorithm ===== (Frames = %d)\n", frameSize);
 
-    // Print table headers
-    printf(" Step | Page  | Memory State      | Page Fault?  |\n");
+    printf("| Step | Page  | Memory State      | Page Fault?  |\n");
+    printf("+-------------------------------------------------+\n");
 
     for (int i = 0; i < pageCount; i++) {
         int currentPage = pages[i];
