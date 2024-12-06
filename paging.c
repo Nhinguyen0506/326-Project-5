@@ -23,7 +23,7 @@ void printMemoryState(int memory[], int frameSize) {
         if (memory[i] != -1) {
             printf("%2d", memory[i]);
         } else {
-            printf("-");
+            printf(" -");
         }
         if (i < frameSize - 1) {
             printf(",");
@@ -42,7 +42,7 @@ void fifoPageReplacement(int pages[], int pageCount, int frameSize) {
     int memoryStateWidth = frameSize * 5 + (frameSize - 1) * 2; 
     printf("\n===== FIFO Algorithm ===== (Frames = %d)\n", frameSize);
     printf("| Step | Page  | %-*s | Page Fault?  |\n", memoryStateWidth, "Memory State");
-    printf("-----------------%*s-----------------\n", memoryStateWidth, "-------------------");
+    printf("-----------------------------------------\n");
 
     for (int i = 0; i < pageCount; i++) {
         int currentPage = pages[i];
@@ -74,7 +74,7 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
     int memoryStateWidth = frameSize * 5 + (frameSize - 1) * 2; 
     printf("\n===== LRU Algorithm ===== (Frames = %d)\n", frameSize);
     printf("| Step | Page  | %-*s | Page Fault?  |\n", memoryStateWidth, "Memory State");
-    printf("-----------------%*s-----------------\n", memoryStateWidth, "----------------------");
+    printf("-----------------------------------------\n");
 
     for (int i = 0; i < pageCount; i++) {
         int currentPage = pages[i];
@@ -107,7 +107,7 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
         // Print the current step, page, memory state, and page fault status
         printf("| %-4d | %-5d | ", i + 1, currentPage);
         printMemoryState(memory, frameSize);
-        printf("   | %-12s\n", pageFault ? "Yes" : "No");
+        printf("      | %-12s\n", pageFault ? "Yes" : "No");
     }
 
     printf("Total Page Faults (LRU): %d\n", pageFaults);
@@ -140,12 +140,12 @@ int main() {
     char pageInput[256], frameInput[256];
 
     // Input for page request sequence
-    printf("Enter the Page Request Sequence (e.g., [7, 0, 1, 2, 0, 3, ...]): ");
+    printf("Enter the Page Request Sequence: ");
     fgets(pageInput, sizeof(pageInput), stdin);
     pageCount = parsePageSequence(pageInput, pages);
 
     // Input for frame sizes
-    printf("Enter the Number of Frames (e.g., 2, 3, 4): ");
+    printf("Enter the Number of Frames:");
     fgets(frameInput, sizeof(frameInput), stdin);
     frameCount = parseFrameSizes(frameInput, frames);
 
