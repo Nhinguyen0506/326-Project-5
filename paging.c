@@ -18,12 +18,12 @@ bool isPageInMemory(int memory[], int frameSize, int page) {
 
 // Function to print memory state in table format
 void printMemoryState(int memory[], int frameSize) {
-    printf("| ");
+    printf("[");
     for (int i = 0; i < frameSize; i++) {
         if (memory[i] != -1) {
-            printf("%2d | ", memory[i]);
+            printf("%2d,", memory[i]);
         } else {
-            printf(" - | ");
+            printf("-]");
         }
     }
 }
