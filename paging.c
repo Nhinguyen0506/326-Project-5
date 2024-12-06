@@ -107,7 +107,7 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
         // Print the current step, page, memory state, and page fault status
         printf("| %-4d | %-5d | ", i + 1, currentPage);
         printMemoryState(memory, frameSize);
-        print("   | %-12s\n", pageFault ? "Yes" : "No");
+        printf("   | %-12s\n", pageFault ? "Yes" : "No");
     }
 
     printf("Total Page Faults (LRU): %d\n", pageFaults);
