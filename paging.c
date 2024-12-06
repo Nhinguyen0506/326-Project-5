@@ -16,78 +16,72 @@ bool isPageInMemory(int memory[], int frameSize, int page) {
     return false;
 }
 
-// Function to print memory state in table format with dynamic width
+// Function to print memory state in table format
 void printMemoryState(int memory[], int frameSize) {
+    printf("[");
     for (int i = 0; i < frameSize; i++) {
         if (memory[i] != -1) {
-            printf("%2d ", memory[i]);
+            printf("%2d", memory[i]);
         } else {
-            printf(" - ");
+            printf("-");
         }
         if (i < frameSize - 1) {
-            printf(", ");
+            printf(",");
         }
     }
+    printf("] ");
 }
 
 // FIFO Page Replacement Algorithm
 void fifoPageReplacement(int pages[], int pageCount, int frameSize) {
     int memory[MAX_FRAMES];
     int front = 0, pageFaults = 0;
-
-    // Initialize memory to -1 (empty)
     for (int i = 0; i < frameSize; i++) {
         memory[i] = -1;
     }
-
-    // Calculate dynamic column width for "Memory State"
-    int memoryStateWidth = frameSize * 5 + (frameSize - 1) * 2; // Width of [x , x , x]
+    int memoryStateWidth = frameSize * 5 + (frameSize - 1) * 2; 
     printf("\n===== FIFO Algorithm ===== (Frames = %d)\n", frameSize);
     printf("| Step | Page  | %-*s | Page Fault?  |\n", memoryStateWidth, "Memory State");
-    printf("-----------------%*s------------------\n", memoryStateWidth, "-------------------");
+    printf("-----------------%*s-----------------\n", memoryStateWidth, "-------------------");
 
     for (int i = 0; i < pageCount; i++) {
         int currentPage = pages[i];
-        int pageFault = 0; // To track if there's a page fault in this step
+        int pageFault = 0;  // To track if there's a page fault in this step
 
         if (!isPageInMemory(memory, frameSize, currentPage)) {
-            memory[front] = currentPage; // Replace the oldest page
+            memory[front] = currentPage;  // Replace the oldest page
             front = (front + 1) % frameSize;
-            pageFault = 1; // Page fault occurred
+            pageFault = 1;  // Page fault occurred
             pageFaults++;
         }
-
-        // Print the current step, page, memory state, and page fault status
         printf("| %-4d | %-5d | ", i + 1, currentPage);
         printMemoryState(memory, frameSize);
-        printf("%-*s | %-12s |\n", memoryStateWidth - frameSize * 5 - 2 * (frameSize - 1), "", pageFault ? "Yes" : "No");
+        printf("| %-12s |\n", pageFault ? "Yes" : "No");
     }
 
+    printf("+------+-------+-------------------+--------------+\n");
     printf("Total Page Faults (FIFO): %d\n", pageFaults);
 }
 
 // LRU Page Replacement Algorithm
 void lruPageReplacement(int pages[], int pageCount, int frameSize) {
     int memory[MAX_FRAMES];
-    int usage[MAX_FRAMES]; // Track last used time for each frame
+    int usage[MAX_FRAMES];  // Track last used time for each frame
     int pageFaults = 0, time = 0;
-
-    // Initialize memory and usage arrays to -1
     for (int i = 0; i < frameSize; i++) {
         memory[i] = -1;
         usage[i] = -1;
     }
-
-    // Calculate dynamic column width for "Memory State"
-    int memoryStateWidth = frameSize * 5 + (frameSize - 1) * 2; // Width of [x , x , x]
+    
+    int memoryStateWidth = frameSize * 5 + (frameSize - 1) * 2; 
     printf("\n===== LRU Algorithm ===== (Frames = %d)\n", frameSize);
     printf("| Step | Page  | %-*s | Page Fault?  |\n", memoryStateWidth, "Memory State");
-    printf("-----------------%*s------------------\n", memoryStateWidth, "-------------------");
+    printf("-----------------%*s-----------------\n", memoryStateWidth, "-------------------");
 
     for (int i = 0; i < pageCount; i++) {
         int currentPage = pages[i];
         time++;
-        int pageFault = 0; // To track if there's a page fault in this step
+        int pageFault = 0;  // To track if there's a page fault in this step
 
         if (!isPageInMemory(memory, frameSize, currentPage)) {
             // Find the least recently used frame
@@ -98,9 +92,9 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
                 }
             }
 
-            memory[lruIndex] = currentPage; // Replace the least recently used page
-            usage[lruIndex] = time;         // Update the usage time
-            pageFault = 1; // Page fault occurred
+            memory[lruIndex] = currentPage;  // Replace the least recently used page
+            usage[lruIndex] = time;          // Update the usage time
+            pageFault = 1;  // Page fault occurred
             pageFaults++;
         } else {
             // Update the usage time for the page
@@ -115,7 +109,7 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
         // Print the current step, page, memory state, and page fault status
         printf("| %-4d | %-5d | ", i + 1, currentPage);
         printMemoryState(memory, frameSize);
-        printf("%-*s | %-12s |\n", memoryStateWidth - frameSize * 5 - 2 * (frameSize - 1), "", pageFault ? "Yes" : "No");
+        printf("| %-12s \n", pageFault ? "Yes" : "No");
     }
 
     printf("Total Page Faults (LRU): %d\n", pageFaults);
