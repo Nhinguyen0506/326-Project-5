@@ -135,19 +135,17 @@ int parseFrameSizes(char input[], int frames[]) {
 
 int main() {
     int pages[MAX_PAGES], frames[MAX_FRAMES], pageCount, frameCount;
+    char pageInput[256], frameInput[256];
 
-    // Input
+    // Input for page request sequence
     printf("Enter the Page Request Sequence: ");
-    for (int i = 0; i < pageCount; i++) {
-        scanf("%d", &pages[i]);
-    }
+    fgets(pageInput, sizeof(pageInput), stdin);
+    pageCount = parsePageSequence(pageInput, pages);
 
-    printf("Enter the number of frame sizes: ");
-    scanf("%d", &frameCount);
-    if (frameCount > MAX_FRAMES || frameCount <= 0) {
-        printf("Invalid number of frame sizes. Exiting.\n");
-        return 1;
-    }
+    // Input for frame sizes
+    printf("Enter the Number of Frames:");
+    fgets(frameInput, sizeof(frameInput), stdin);
+    frameCount = parseFrameSizes(frameInput, frames);
 
     for (int i = 0; i < frameCount; i++) {
         int frameSize = frames[i];
