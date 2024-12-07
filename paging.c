@@ -7,7 +7,7 @@
 #define MAX_PAGES 50
 
 // Function to check if a page is in memory
-bool isPageInMemory(int memory[], int frameSize, int page) {
+bool isPageMemory(int memory[], int frameSize, int page) {
     for (int i = 0; i < frameSize; i++) {
         if (memory[i] == page) {
             return true;
@@ -16,7 +16,7 @@ bool isPageInMemory(int memory[], int frameSize, int page) {
     return false;
 }
 
-// Function to print memory state in table format
+// Function to print memory state
 void printMemoryState(int memory[], int frameSize) {
     printf("[");
     for (int i = 0; i < frameSize; i++) {
@@ -46,9 +46,9 @@ void fifoPageReplacement(int pages[], int pageCount, int frameSize) {
 
     for (int i = 0; i < pageCount; i++) {
         int currentPage = pages[i];
-        int pageFault = 0;  // To track if there's a page fault in this step
+        int pageFault = 0;  // Track if there's a page fault in this step
 
-        if (!isPageInMemory(memory, frameSize, currentPage)) {
+        if (!isPageMemory(memory, frameSize, currentPage)) {
             memory[front] = currentPage;  // Replace the oldest page
             front = (front + 1) % frameSize;
             pageFault = 1;  // Page fault occurred
@@ -79,9 +79,9 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
     for (int i = 0; i < pageCount; i++) {
         int currentPage = pages[i];
         time++;
-        int pageFault = 0;  // To track if there's a page fault in this step
+        int pageFault = 0;  // Track if there's a page fault
 
-        if (!isPageInMemory(memory, frameSize, currentPage)) {
+        if (!isPageMemory(memory, frameSize, currentPage)) {
             // Find the least recently used frame
             int lruIndex = 0;
             for (int j = 1; j < frameSize; j++) {
@@ -90,12 +90,11 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
                 }
             }
 
-            memory[lruIndex] = currentPage;  // Replace the least recently used page
-            usage[lruIndex] = time;          // Update the usage time
+            memory[lruIndex] = currentPage; 
+            usage[lruIndex] = time; 
             pageFault = 1;  // Page fault occurred
             pageFaults++;
         } else {
-            // Update the usage time for the page
             for (int j = 0; j < frameSize; j++) {
                 if (memory[j] == currentPage) {
                     usage[j] = time;
@@ -103,7 +102,6 @@ void lruPageReplacement(int pages[], int pageCount, int frameSize) {
                 }
             }
         }
-
         // Print the current step, page, memory state, and page fault status
         printf("| %-4d | %-5d | ", i + 1, currentPage);
         printMemoryState(memory, frameSize);
@@ -137,27 +135,29 @@ int parseFrameSizes(char input[], int frames[]) {
 
 int main() {
     int pages[MAX_PAGES], frames[MAX_FRAMES], pageCount, frameCount;
-    char pageInput[256], frameInput[256];
 
-    // Input for page request sequence
+    // Input
     printf("Enter the Page Request Sequence: ");
-    fgets(pageInput, sizeof(pageInput), stdin);
-    pageCount = parsePageSequence(pageInput, pages);
+    for (int i = 0; i < pageCount; i++) {
+        scanf("%d", &pages[i]);
+    }
 
-    // Input for frame sizes
-    printf("Enter the Number of Frames:");
-    fgets(frameInput, sizeof(frameInput), stdin);
-    frameCount = parseFrameSizes(frameInput, frames);
+    printf("Enter the number of frame sizes: ");
+    scanf("%d", &frameCount);
+    if (frameCount > MAX_FRAMES || frameCount <= 0) {
+        printf("Invalid number of frame sizes. Exiting.\n");
+        return 1;
+    }
 
-    // Run algorithms for each frame size
     for (int i = 0; i < frameCount; i++) {
         int frameSize = frames[i];
         if (frameSize <= 0 || frameSize > MAX_FRAMES) {
             printf("Invalid frame size (%d). Skipping.\n", frameSize);
             continue;
         }
-
+        // Run FIFO
         fifoPageReplacement(pages, pageCount, frameSize);
+        // Run LRU
         lruPageReplacement(pages, pageCount, frameSize);
     }
 
