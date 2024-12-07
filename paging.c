@@ -37,7 +37,7 @@ void fifoPageReplacement(int pages[], int pageCount, int frameSize) {
     int memory[MAX_FRAMES];
     int front = 0, pageFaults = 0;
     for (int i = 0; i < frameSize; i++) {
-        memory[i] = -1;
+        memory[i] = -1; // Initialize memory with -1
     }
     int memoryStateWidth = frameSize * 5 + (frameSize - 1) * 2; 
     printf("\n===== FIFO Algorithm ===== (Frames = %d)\n", frameSize);
@@ -138,12 +138,12 @@ int main() {
     char pageInput[256], frameInput[256];
 
     // Input for page request sequence
-    printf("Enter the Page Request Sequence: ");
+    printf("Enter Page Request Sequence (example: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2]): ");
     fgets(pageInput, sizeof(pageInput), stdin);
     pageCount = parsePageSequence(pageInput, pages);
 
     // Input for frame sizes
-    printf("Enter the Number of Frames:");
+    printf("Enter Number of Frames (example: 2, 3, 4):");
     fgets(frameInput, sizeof(frameInput), stdin);
     frameCount = parseFrameSizes(frameInput, frames);
 
